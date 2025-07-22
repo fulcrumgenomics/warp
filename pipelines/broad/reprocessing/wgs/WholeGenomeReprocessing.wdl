@@ -54,12 +54,14 @@ workflow WholeGenomeReprocessing {
   call WholeGenomeGermlineSingleSample.WholeGenomeGermlineSingleSample {
     input:
       sample_and_unmapped_bams = sample_and_unmapped_bams,
-      references = references,
+      reference_fasta = references.reference_fasta,
+      calling_interval_list = references.calling_interval_list,
+      evaluation_interval_list = references.evaluation_interval_list,
       scatter_settings = scatter_settings,
-      fingerprint_genotypes_file = fingerprint_genotypes_file,
-      fingerprint_genotypes_index = fingerprint_genotypes_index,
       papi_settings = papi_settings,
       wgs_coverage_interval_list = wgs_coverage_interval_list,
+      empty_dbsnp_vcf = references.dbsnp_vcf,
+      empty_dbsnp_vcf_index = references.dbsnp_vcf_index,
       cloud_provider = cloud_provider
   }
 
@@ -83,11 +85,6 @@ workflow WholeGenomeReprocessing {
     File read_group_gc_bias_pdf = WholeGenomeGermlineSingleSample.read_group_gc_bias_pdf
     File read_group_gc_bias_summary_metrics = WholeGenomeGermlineSingleSample.read_group_gc_bias_summary_metrics
 
-    File? cross_check_fingerprints_metrics = WholeGenomeGermlineSingleSample.cross_check_fingerprints_metrics
-
-    File selfSM = WholeGenomeGermlineSingleSample.selfSM
-    Float contamination = WholeGenomeGermlineSingleSample.contamination
-
     File calculate_read_group_checksum_md5 = WholeGenomeGermlineSingleSample.calculate_read_group_checksum_md5
 
     File agg_alignment_summary_metrics = WholeGenomeGermlineSingleSample.agg_alignment_summary_metrics
@@ -103,14 +100,10 @@ workflow WholeGenomeReprocessing {
     File agg_quality_distribution_pdf = WholeGenomeGermlineSingleSample.agg_quality_distribution_pdf
     File agg_quality_distribution_metrics = WholeGenomeGermlineSingleSample.agg_quality_distribution_metrics
 
-    File? fingerprint_summary_metrics = WholeGenomeGermlineSingleSample.fingerprint_summary_metrics
-    File? fingerprint_detail_metrics = WholeGenomeGermlineSingleSample.fingerprint_detail_metrics
-
     File wgs_metrics = WholeGenomeGermlineSingleSample.wgs_metrics
     File raw_wgs_metrics = WholeGenomeGermlineSingleSample.raw_wgs_metrics
 
     File duplicate_metrics = WholeGenomeGermlineSingleSample.duplicate_metrics
-    File? output_bqsr_reports = WholeGenomeGermlineSingleSample.output_bqsr_reports
 
     File gvcf_summary_metrics = WholeGenomeGermlineSingleSample.gvcf_summary_metrics
     File gvcf_detail_metrics = WholeGenomeGermlineSingleSample.gvcf_detail_metrics
