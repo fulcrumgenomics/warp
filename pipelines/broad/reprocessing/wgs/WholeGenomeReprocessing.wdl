@@ -54,12 +54,14 @@ workflow WholeGenomeReprocessing {
   call WholeGenomeGermlineSingleSample.WholeGenomeGermlineSingleSample {
     input:
       sample_and_unmapped_bams = sample_and_unmapped_bams,
-      references = references,
+      references = references.reference_fasta,
+      calling_interval_list = references.calling_interval_list,
+      evaluation_interval_list = references.evaluation_interval_list,
       scatter_settings = scatter_settings,
-      fingerprint_genotypes_file = fingerprint_genotypes_file,
-      fingerprint_genotypes_index = fingerprint_genotypes_index,
       papi_settings = papi_settings,
       wgs_coverage_interval_list = wgs_coverage_interval_list,
+      empty_dbsnp_vcf = references.dbsnp_vcf,
+      empty_dbsnp_vcf_index = references.dbsnp_vcf_index,
       cloud_provider = cloud_provider
   }
 
