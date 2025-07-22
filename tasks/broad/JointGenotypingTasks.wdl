@@ -150,7 +150,7 @@ task GenotypeGVCFs {
     File ref_fasta_index
     File ref_dict
 
-    String dbsnp_vcf
+    String? dbsnp_vcf
 
     Boolean keep_combined_raw_annotations = false
     String? additional_annotation
@@ -178,7 +178,7 @@ task GenotypeGVCFs {
       GenotypeGVCFs \
       -R ~{ref_fasta} \
       -O ~{output_vcf_filename} \
-      -D ~{dbsnp_vcf} \
+      ~{"-D " + dbsnp_vcf} \
       -G StandardAnnotation -G AS_StandardAnnotation \
       --only-output-calls-starting-in-intervals \
       -V gendb://$WORKSPACE \
@@ -301,7 +301,7 @@ task HardFilterAndMakeSitesOnlyVcf {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "1"
+    cpu: 1
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -363,7 +363,7 @@ task IndelsVariantRecalibrator {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "2"
+    cpu: 2
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -431,7 +431,7 @@ task SNPsVariantRecalibratorCreateModel {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "2"
+    cpu: 2
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -578,7 +578,7 @@ task GatherTranches {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "2"
+    cpu: 2
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -638,7 +638,7 @@ task ApplyRecalibration {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "1"
+    cpu: 1
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -685,7 +685,7 @@ task GatherVcfs {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "1"
+    cpu: 1
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -856,7 +856,7 @@ task GatherVariantCallingMetrics {
 
   runtime {
     memory: "~{machine_mem_mb} MiB"
-    cpu: "1"
+    cpu: 1
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size_gb + " HDD"
     preemptible: 1
@@ -897,7 +897,7 @@ task CrossCheckFingerprint {
   Int cpu = if num_gvcfs < 32 then num_gvcfs else 32
   # Compute memory to use based on the CPU count, following the pattern of
   # 3.75GiB / cpu used by GCP's pricing: https://cloud.google.com/compute/pricing
-  Int memory = if defined(machine_mem_mb) then machine_mem_mb else round(cpu * 3.75 * 1024)
+  Int memory = select_first([machine_mem_mb, round(cpu * 3.75 * 1024)]
   Int java_mem = memory - 512
 
   String output_name = output_base_name + ".fingerprintcheck"
