@@ -83,11 +83,6 @@ workflow WholeGenomeReprocessing {
     File read_group_gc_bias_pdf = WholeGenomeGermlineSingleSample.read_group_gc_bias_pdf
     File read_group_gc_bias_summary_metrics = WholeGenomeGermlineSingleSample.read_group_gc_bias_summary_metrics
 
-    File? cross_check_fingerprints_metrics = WholeGenomeGermlineSingleSample.cross_check_fingerprints_metrics
-
-    File selfSM = WholeGenomeGermlineSingleSample.selfSM
-    Float contamination = WholeGenomeGermlineSingleSample.contamination
-
     File calculate_read_group_checksum_md5 = WholeGenomeGermlineSingleSample.calculate_read_group_checksum_md5
 
     File agg_alignment_summary_metrics = WholeGenomeGermlineSingleSample.agg_alignment_summary_metrics
@@ -103,14 +98,10 @@ workflow WholeGenomeReprocessing {
     File agg_quality_distribution_pdf = WholeGenomeGermlineSingleSample.agg_quality_distribution_pdf
     File agg_quality_distribution_metrics = WholeGenomeGermlineSingleSample.agg_quality_distribution_metrics
 
-    File? fingerprint_summary_metrics = WholeGenomeGermlineSingleSample.fingerprint_summary_metrics
-    File? fingerprint_detail_metrics = WholeGenomeGermlineSingleSample.fingerprint_detail_metrics
-
     File wgs_metrics = WholeGenomeGermlineSingleSample.wgs_metrics
     File raw_wgs_metrics = WholeGenomeGermlineSingleSample.raw_wgs_metrics
 
     File duplicate_metrics = WholeGenomeGermlineSingleSample.duplicate_metrics
-    File? output_bqsr_reports = WholeGenomeGermlineSingleSample.output_bqsr_reports
 
     File gvcf_summary_metrics = WholeGenomeGermlineSingleSample.gvcf_summary_metrics
     File gvcf_detail_metrics = WholeGenomeGermlineSingleSample.gvcf_detail_metrics
