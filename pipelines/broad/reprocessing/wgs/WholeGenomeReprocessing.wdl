@@ -54,7 +54,7 @@ workflow WholeGenomeReprocessing {
   call WholeGenomeGermlineSingleSample.WholeGenomeGermlineSingleSample {
     input:
       sample_and_unmapped_bams = sample_and_unmapped_bams,
-      references = references.reference_fasta,
+      reference_fasta = references.reference_fasta,
       calling_interval_list = references.calling_interval_list,
       evaluation_interval_list = references.evaluation_interval_list,
       scatter_settings = scatter_settings,
