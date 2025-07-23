@@ -20,7 +20,7 @@ workflow CramToUnmappedBams {
     String base_file_name
     String unmapped_bam_suffix = ".unmapped.bam"
     Int additional_disk = 20
-    Bool restore_hardclips = false
+    Boolean restore_hardclips = true
   }
 
   if (defined(input_cram)) {
@@ -104,7 +104,7 @@ task RevertSam {
     String output_bam_filename
     Int disk_size
     Int memory_in_MiB = 3000
-    Bool restore_hardclips = false
+    Boolean restore_hardclips = true
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -120,7 +120,7 @@ task RevertSam {
     --ATTRIBUTE_TO_CLEAR CO \
     --ATTRIBUTE_TO_CLEAR PA \
     --ATTRIBUTE_TO_CLEAR OA \
-    -ATTRIBUTE_TO_CLEAR XA \
+    --ATTRIBUTE_TO_CLEAR XA \
     --RESTORE_HARDCLIPS ~{restore_hardclips} \
     --SORT_ORDER coordinate
 
