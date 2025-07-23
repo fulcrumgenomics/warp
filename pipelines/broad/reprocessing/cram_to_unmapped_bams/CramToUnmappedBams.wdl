@@ -25,8 +25,8 @@ workflow CramToUnmappedBams {
 
   if (defined(input_cram)) {
     Float cram_size = size(input_cram, "GiB")
-    String bam_from_cram_name = basename(input_cram_path, ".cram")
     String input_cram_path = select_first([input_cram])
+    String bam_from_cram_name = basename(input_cram_path, ".cram")
 
     call CramToBam {
       input:
@@ -120,7 +120,7 @@ task RevertSam {
     --ATTRIBUTE_TO_CLEAR CO \
     --ATTRIBUTE_TO_CLEAR PA \
     --ATTRIBUTE_TO_CLEAR OA \
-    --ATTRIBUTE_TO_CLEAR XA \
+    -ATTRIBUTE_TO_CLEAR XA \
     ~{if restore_hardclips then "--RESTORE_HARDCLIPS" else ""} \
     --SORT_ORDER coordinate
 
