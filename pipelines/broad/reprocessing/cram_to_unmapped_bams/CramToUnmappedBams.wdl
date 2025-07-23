@@ -121,7 +121,7 @@ task RevertSam {
     --ATTRIBUTE_TO_CLEAR PA \
     --ATTRIBUTE_TO_CLEAR OA \
     -ATTRIBUTE_TO_CLEAR XA \
-    ~{if restore_hardclips then "--RESTORE_HARDCLIPS" else ""} \
+    --RESTORE_HARDCLIPS" ~{restore_hardclips} \
     --SORT_ORDER coordinate
 
   >>>
