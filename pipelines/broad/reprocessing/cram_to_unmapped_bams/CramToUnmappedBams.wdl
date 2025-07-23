@@ -20,6 +20,7 @@ workflow CramToUnmappedBams {
     String base_file_name
     String unmapped_bam_suffix = ".unmapped.bam"
     Int additional_disk = 20
+    Bool restore_hardclips = false
   }
 
   if (defined(input_cram)) {
@@ -68,7 +69,8 @@ workflow CramToUnmappedBams {
       input:
         input_bam = SplitOutUbamByReadGroup.output_bam,
         output_bam_filename = unmapped_bam_filename,
-        disk_size = ceil(input_size * 3) + additional_disk
+        disk_size = ceil(input_size * 3) + additional_disk,
+        restore_hardclips = restore_hardclips,
     }
 
     call SortSam {
@@ -102,6 +104,7 @@ task RevertSam {
     String output_bam_filename
     Int disk_size
     Int memory_in_MiB = 3000
+    Bool restore_hardclips = false
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -118,6 +121,7 @@ task RevertSam {
     --ATTRIBUTE_TO_CLEAR PA \
     --ATTRIBUTE_TO_CLEAR OA \
     --ATTRIBUTE_TO_CLEAR XA \
+    ~{if restore_hardclips then "--RESTORE_HARDCLIPS" else ""} \
     --SORT_ORDER coordinate
 
   >>>
