@@ -1,5 +1,8 @@
 version 1.0
 
+
+import "../../../../tasks/broad/RevertSam.wdl" as RevertSam
+
 # Exactly one of input_cram and input_bam should be supplied to this workflow. If an input_cram is supplied, a ref_fasta
 # and ref_fasta_index must also be supplied. The ref_fasta and ref_fasta_index are used to generate a bam, so if an
 # input_cram is not supplied, the input_bam is used instead and the ref_fasta and ref_fasta_index are not needed.
@@ -65,7 +68,7 @@ workflow CramToUnmappedBams {
 
     String unmapped_bam_filename = basename(SplitOutUbamByReadGroup.output_bam)
 
-    call RevertSam {
+    call RevertSam.RevertSam {
       input:
         input_bam = SplitOutUbamByReadGroup.output_bam,
         output_bam_filename = unmapped_bam_filename,
@@ -95,46 +98,6 @@ workflow CramToUnmappedBams {
   }
   meta {
     allowNestedInputs: true
-  }
-}
-
-task RevertSam {
-  input {
-    File input_bam
-    String output_bam_filename
-    Int disk_size
-    Int memory_in_MiB = 3000
-    Boolean restore_hardclips = true
-  }
-
-  Int java_mem = memory_in_MiB - 1000
-  Int max_heap = memory_in_MiB - 500
-
-  command <<<
-    java -Xms~{java_mem}m -Xmx~{max_heap}m -jar /usr/picard/picard.jar \
-    RevertSam \
-    --INPUT ~{input_bam} \
-    --OUTPUT ~{output_bam_filename} \
-    --VALIDATION_STRINGENCY LENIENT \
-    --ATTRIBUTE_TO_CLEAR FT \
-    --ATTRIBUTE_TO_CLEAR CO \
-    --ATTRIBUTE_TO_CLEAR PA \
-    --ATTRIBUTE_TO_CLEAR OA \
-    --ATTRIBUTE_TO_CLEAR XA \
-    --RESTORE_HARDCLIPS ~{restore_hardclips} \
-    --SORT_ORDER coordinate
-
-  >>>
-
-  runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.26.10"
-    disks: "local-disk " + disk_size + " HDD"
-    memory: "~{memory_in_MiB} MiB"
-    preemptible: 3
-  }
-
-  output {
-    File output_bam = output_bam_filename
   }
 }
 
