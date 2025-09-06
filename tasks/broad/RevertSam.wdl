@@ -59,7 +59,7 @@ workflow RevertSam {
 
   # size(input_bam, "G") returns file size in gigabytes (Float).
   Float input_size_GB = size(input_bam, "G")
-  Int disk_size = ceil(input_size_GB * 3.0)
+  Int disk_size = ceil(input_size_GB * 4.0)
 
   call RevertSamTask {
     input:
