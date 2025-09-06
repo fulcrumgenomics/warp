@@ -75,7 +75,7 @@ task SamToFastqAndBwaMemAndMba {
       -O  /dev/stdout \
       --MAX_RECORDS_IN_RAM 5000000 \
       -SO queryname | \
-     samtools view -b -1 --threads 8 - > ~{output_bam_basename}.qname_sorted.bam
+     samtools view -b -1 --threads 8 -o ~{output_bam_basename}.qname_sorted.bam
 
     # no need to keep this around, and will reduce the disk-space usage.
     rm -f ~{input_bam}
