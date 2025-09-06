@@ -61,12 +61,12 @@ task SamToFastqAndBwaMemAndMba {
 
     # "natually" sorted reads are not queryname sorted according to picard/htsjdk
     # for the old version of picard that's here, BMA chokes with strange error messages
-    # this pre-emptiv sort should fix the problem.
+    # this pre-emptive sort should fix the problem.
 
     java \
       -Dsamjdk.use_async_io_read_samtools=true \
       -Dsamjdk.use_async_io_write_samtools=true \
-      -Xmx13g \
+      -Xmx10g \
       -jar /usr/gitc/picard.jar \
       SortSam \
       --COMPRESSION_LEVEL 0 \
@@ -78,7 +78,7 @@ task SamToFastqAndBwaMemAndMba {
      samtools view -b -1 --threads 8 -o ~{output_bam_basename}.qname_sorted.bam
 
     # no need to keep this around, and will reduce the disk-space usage.
-    rm -f ~{input_bam}
+    rm -f '~{input_bam}'
 
     # set the bash variable needed for the command-line
     bash_ref_fasta=~{reference_fasta.ref_fasta}
@@ -89,8 +89,10 @@ task SamToFastqAndBwaMemAndMba {
         INPUT=~{output_bam_basename}.qname_sorted.bam \
         FASTQ=/dev/stdout \
         INTERLEAVE=true \
-        NON_PF=true | \
+        NON_PF=true | 
+      java -Xms4000m -Xmx5000m -jar FifoBuffer | \
       /usr/gitc/~{bwa_commandline} /dev/stdin - 2> >(tee ~{output_bam_basename}.bwa.stderr.log >&2) | \
+      java -Xms4000m -Xmx5000m -jar FifoBuffer | \
       java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
         MergeBamAlignment \
         VALIDATION_STRINGENCY=SILENT \
@@ -135,8 +137,8 @@ task SamToFastqAndBwaMemAndMba {
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/samtools-picard-bwa:1.0.2-0.7.15-2.26.10-1643840748"
     preemptible: preemptible_tries
-    memory: "14 GiB"
-    cpu: 16
+    memory: "20 GiB"
+    cpu: 17
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
