@@ -66,6 +66,7 @@ task SamToFastqAndBwaMemAndMba {
     java \
       -Dsamjdk.use_async_io_read_samtools=true \
       -Dsamjdk.use_async_io_write_samtools=true \
+      -Djava.io.tmpdir=/mnt/disks/cromwell_root/tmp \
       -Xmx10g \
       -jar /usr/gitc/picard.jar \
       SortSam \
@@ -84,7 +85,8 @@ task SamToFastqAndBwaMemAndMba {
     bash_ref_fasta=~{reference_fasta.ref_fasta}
     # if reference_fasta.ref_alt has data in it or allow_empty_ref_alt is set
     if [ -s ~{reference_fasta.ref_alt} ] || ~{allow_empty_ref_alt}; then
-      java -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
+      java -Xms1000m -Xmx1000m -Djava.io.tmpdir=/mnt/disks/cromwell_root/tmp \
+        -jar /usr/gitc/picard.jar \
         SamToFastq \
         INPUT=~{output_bam_basename}.qname_sorted.bam \
         FASTQ=/dev/stdout \
@@ -93,7 +95,9 @@ task SamToFastqAndBwaMemAndMba {
       java -Xms4000m -Xmx5000m -jar /usr/gitc/picard.jar FifoBuffer | \
       /usr/gitc/~{bwa_commandline} /dev/stdin - 2> >(tee ~{output_bam_basename}.bwa.stderr.log >&2) | \
       java -Xms4000m -Xmx5000m -jar /usr/gitc/picard.jar FifoBuffer | \
-      java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
+      java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m \
+        -Djava.io.tmpdir=/mnt/disks/cromwell_root/tmp \
+        -jar /usr/gitc/picard.jar \
         MergeBamAlignment \
         VALIDATION_STRINGENCY=SILENT \
         EXPECTED_ORIENTATIONS=FR \
@@ -137,7 +141,7 @@ task SamToFastqAndBwaMemAndMba {
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/samtools-picard-bwa:1.0.2-0.7.15-2.26.10-1643840748"
     preemptible: preemptible_tries
-    memory: "20 GiB"
+    memory: "25 GiB"
     cpu: 17
     disks: "local-disk " + disk_size + " HDD"
   }
