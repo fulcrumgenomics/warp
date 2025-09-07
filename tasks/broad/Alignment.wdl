@@ -90,9 +90,9 @@ task SamToFastqAndBwaMemAndMba {
         FASTQ=/dev/stdout \
         INTERLEAVE=true \
         NON_PF=true | 
-      java -Xms4000m -Xmx5000m -jar FifoBuffer | \
+      java -Xms4000m -Xmx5000m -jar /usr/gitc/picard.jar FifoBuffer | \
       /usr/gitc/~{bwa_commandline} /dev/stdin - 2> >(tee ~{output_bam_basename}.bwa.stderr.log >&2) | \
-      java -Xms4000m -Xmx5000m -jar FifoBuffer | \
+      java -Xms4000m -Xmx5000m -jar /usr/gitc/picard.jar FifoBuffer | \
       java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
         MergeBamAlignment \
         VALIDATION_STRINGENCY=SILENT \
