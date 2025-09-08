@@ -34,6 +34,7 @@ task SamToFastqAndBwaMemAndMba {
     Boolean hard_clip_reads = false
     Boolean unmap_contaminant_reads = true
     Boolean allow_empty_ref_alt = false
+    File? monitoring_script 
   }
 
   Float unmapped_bam_size = size(input_bam, "GiB")
@@ -57,6 +58,10 @@ task SamToFastqAndBwaMemAndMba {
 
     if [ -z ${BWA_VERSION} ]; then
         exit 1;
+    fi
+
+    if [ -s ~{monitoring_script} ]; then
+        bash ~{monitoring_script} > monitoring_private.log &
     fi
 
     # "natually" sorted reads are not queryname sorted according to picard/htsjdk
