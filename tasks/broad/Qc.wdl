@@ -502,7 +502,7 @@ task CollectRawWgsMetrics {
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB")
   Int disk_size = ceil(size(input_bam, "GiB") + ref_size) + additional_disk
 
-  Int memory_size = ceil((if (disk_size < 110) then 5 else 7) * memory_multiplier)
+  Int memory_size = ceil((if (disk_size < 110) then 5 else 7) * memory_multiplier) + 4
   String java_memory_size = (memory_size - 1) * 1000
 
   command {
