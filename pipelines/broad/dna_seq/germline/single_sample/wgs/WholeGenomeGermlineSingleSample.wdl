@@ -232,8 +232,6 @@ workflow WholeGenomeGermlineSingleSample {
     File output_cram_index = BamToCram.output_cram_index
     File output_cram_md5 = BamToCram.output_cram_md5
 
-    File validate_cram_file_report = BamToCram.validate_cram_file_report
-
     File output_vcf = BamToGvcf.output_vcf
     File output_vcf_index = BamToGvcf.output_vcf_index
   }
